@@ -38,9 +38,9 @@ public:
         move_group_node_, PLANNING_GROUP_ROBOT);
     move_group_gripper_ = std::make_shared<MoveGroupInterface>(
         move_group_node_, PLANNING_GROUP_GRIPPER);
-    move_group_gripper_->setMaxVelocityScalingFactor(0.2);       // 20% of max speed
-    move_group_gripper_->setMaxAccelerationScalingFactor(0.2);   // 20% of max accel
-
+    move_group_gripper_->setMaxVelocityScalingFactor(0.2); // 20% of max speed
+    move_group_gripper_->setMaxAccelerationScalingFactor(
+        0.2); // 20% of max accel
 
     // get initial state of robot and gripper
     joint_model_group_robot_ =
@@ -110,7 +110,6 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Goal Pose Trajectory...");
     execute_trajectory_kinematics();
 
-
     // open the gripper
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
     // setup the gripper target by pose name
@@ -137,7 +136,6 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
     execute_trajectory_cartesian();
 
-
     // close the gripper
     RCLCPP_INFO(LOGGER, "Closing Gripper...");
     // setup the gripper joint value
@@ -150,7 +148,6 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Gripper Action...");
     execute_trajectory_gripper();
     RCLCPP_INFO(LOGGER, "Gripper Closed");
-    
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
@@ -186,7 +183,7 @@ public:
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(-0.100, +0.100, +0.000);
+    setup_waypoints_target(-0.035, -0.035, +0.000);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -198,12 +195,15 @@ public:
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, -0.650);
+    setup_waypoints_target(+0.000, +0.000, -1.15);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
     RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
     execute_trajectory_cartesian();
+
+    // wait for few seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 
     // open the gripper
@@ -217,18 +217,15 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Gripper Action...");
     execute_trajectory_gripper();
     RCLCPP_INFO(LOGGER, "Gripper Opened");
-    
-
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, +0.650);
+    setup_waypoints_target(+0.000, +0.000, +1.15);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
     RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
     execute_trajectory_cartesian();
-
 
     // close the gripper
     RCLCPP_INFO(LOGGER, "Closing Gripper...");
@@ -295,8 +292,6 @@ public:
 
     RCLCPP_INFO(LOGGER, "Draw X Cartesian Trajectory Execution Complete");
   }
-
-
 
 private:
   // using shorthand for lengthy class references

@@ -8,6 +8,7 @@ ros2 launch the_construct_office_gazebo starbots_ur3e.launch.xml
 cd ros2_ws/
 source install/setup.bash
 ros2 launch my_moveit_config move_group.launch.py
+ros2 launch real_moveit_config move_group.launch.py
 
 after lunch, check the followig controller satus, if this is not up and running other steps will have problem.
 [spawner-6] [INFO] [1758909533.555353859] [spawner_gripper_controller]: Configured and activated gripper_controller
@@ -18,20 +19,34 @@ ros2 topic echo /joint_states
 cd ros2_ws/ros2 control list_controllers
 
 # launch rviz
+cd ros2_ws
 source install/setup.bash
 ros2 launch my_moveit_config moveit_rviz.launch.py
+ros2 launch real_moveit_config moveit_rviz.launch.py
 
 # start motionz
 cd ros2_ws/
 colcon build --packages-select moveit2_scripts
+cd ~/ros2_ws/
 source install/setup.bash
 ros2 launch moveit2_scripts pick_and_place.launch.py
 
 
+# Object detection, rviz
+cd ros2_ws/
+colcon build --packages-select object_detection_cpp
+source install/setup.bash
+ros2 launch object_detection_cpp object_detection.launch.py
+
 # Helps
 ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 ros2 run tf2_ros tf2_echo base_link tool0
+ros2 run tf2_ros tf2_echo base_link wrist_rgbd_camera_link
+ros2 run tf2_ros tf2_echo base_link wrist_rgbd_camera_depth_frame 
+ros2 run tf2_ros tf2_echo wrist_rgbd_camera_link wrist_rgbd_camera_depth_frame 
 ros2 launch moveit_setup_assistant setup_assistant.launch.py
+
+
 
 user:~$ ros2 action send_goal /gripper_controller/gripper_cmd control_msgs/action/GripperCommand "command:
   position: -0.7
@@ -70,3 +85,43 @@ by mistake you have to build whole works space again
 colcon build --packages-select custom_msgs
 source install/setup.bash
 colcon build
+
+
+
+ros2 topic echo /joint_states
+
+
+ros2 run object_detection_cpp object_detection_node --ros-args \
+  -p plane.max_x_dist:=0.8 -p plane.min_height:=-0.3 -p plane.max_height:=0.0 \
+  -p objects.max_x_dist:=0.8 -p objects.min_height:=0.0 -p objects.max_height:=1.0 \
+  -p cluster.tolerance:=0.02 -p cluster.min_size:=1000 -p cluster.max_size:=500000 \
+  -p target_frame:=base_link
+
+
+ros2 run object_detection_cpp object_detection_node --ros-args \
+  -p plane.max_x_dist:=2.0 -p plane.min_height:=-0.1 -p plane.max_height:=0.01 \
+  -p objects.max_x_dist:=2.0 -p objects.min_height:=0.0 -p objects.max_height:=1.0 \
+  -p cluster.tolerance:=0.02 -p cluster.min_size:=1000 -p cluster.max_size:=100000 \
+  -p target_frame:=base_link
+
+
+ros2 topic echo /surface_detected
+ros2 topic echo /object_detected
+
+
+
+At time 0.0
+- Translation: [-0.238, -0.300, 0.200]
+- Rotation: in Quaternion [-0.354, 0.354, 0.612, 0.612]
+- Rotation: in RPY (radian) [0.000, 1.047, 1.571]
+- Rotation: in RPY (degree) [0.000, 60.000, 90.000]
+- Matrix:
+  0.000 -1.000  0.000 -0.238
+  0.500  0.000  0.866 -0.300
+ -0.866  0.000  0.500  0.200
+  0.000  0.000  0.000  1.000
+
+
+Setting the scene for model 'name' but model 'ur3e' is loaded.
+<xacro:arg name="ur_type" default="ur3e"/>
+default_value="ur3e",  // need this for simulation
