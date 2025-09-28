@@ -25,7 +25,7 @@ ros2 launch my_moveit_config moveit_rviz.launch.py
 ros2 launch real_moveit_config moveit_rviz.launch.py
 
 # start motionz
-cd ros2_ws/
+cd ~/ros2_ws/
 colcon build --packages-select moveit2_scripts
 cd ~/ros2_ws/
 source install/setup.bash
@@ -125,3 +125,12 @@ At time 0.0
 Setting the scene for model 'name' but model 'ur3e' is loaded.
 <xacro:arg name="ur_type" default="ur3e"/>
 default_value="ur3e",  // need this for simulation
+
+##remove cups when you fail
+ros2 service call /delete_entity gazebo_msgs/srv/DeleteEntity "{name: 'portable_cup_2'}"
+
+## spawn cup again
+ros2 run gazebo_ros spawn_entity.py \
+  -entity portable_cup_2 \
+  -file ~/ros2_ws/install/barista_extra_models/share/barista_extra_models/models/portable_cup_2/model.sdf \
+  -x 14.16 -y -18.19 -z 1.025

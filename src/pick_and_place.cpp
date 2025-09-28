@@ -161,29 +161,54 @@ public:
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    RCLCPP_INFO(LOGGER, "Going to Place Position...");
-    // get current state of robot
-    current_state_robot_ = move_group_robot_->getCurrentState(10);
-    current_state_robot_->copyJointGroupPositions(joint_model_group_robot_,
-                                                  joint_group_positions_robot_);
-    // setup the joint value target
-    RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
-    setup_joint_value_target(
-        joint_group_positions_robot_[0] + 2.0, joint_group_positions_robot_[1],
-        joint_group_positions_robot_[2], joint_group_positions_robot_[3],
-        joint_group_positions_robot_[4], joint_group_positions_robot_[5]);
+    // setup the cartesian target
+    RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
+    setup_waypoints_target(-0.648, -0.214, +0.000);
     // plan and execute the trajectory
-    RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
-    plan_trajectory_kinematics();
-    RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
-    execute_trajectory_kinematics();
+    RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
+    plan_trajectory_cartesian();
+    RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
+    execute_trajectory_cartesian();
+
+    // // wait for few seconds
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    // RCLCPP_INFO(LOGGER, "Going to Place Position...");
+    // // get current state of robot
+    // current_state_robot_ = move_group_robot_->getCurrentState(10);
+    // current_state_robot_->copyJointGroupPositions(joint_model_group_robot_,
+    //                                               joint_group_positions_robot_);
+    // // setup the joint value target
+    // RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
+    // setup_joint_value_target(
+    //     joint_group_positions_robot_[0] + 2.0,
+    //     joint_group_positions_robot_[1], joint_group_positions_robot_[2],
+    //     joint_group_positions_robot_[3], joint_group_positions_robot_[4],
+    //     joint_group_positions_robot_[5]);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
+    // plan_trajectory_kinematics();
+    // RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
+    // execute_trajectory_kinematics();
+
+    // // wait for few seconds
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    // // setup the cartesian target
+    // RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
+    // setup_waypoints_target(-0.035, -0.035, +0.000);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
+    // plan_trajectory_cartesian();
+    // RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
+    // execute_trajectory_cartesian();
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(-0.035, -0.035, +0.000);
+    setup_waypoints_target(+0.000, +0.000, -1.2);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -192,19 +217,6 @@ public:
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-    // setup the cartesian target
-    RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, -1.15);
-    // plan and execute the trajectory
-    RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
-    plan_trajectory_cartesian();
-    RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
-    execute_trajectory_cartesian();
-
-    // wait for few seconds
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 
     // open the gripper
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
@@ -217,15 +229,21 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Gripper Action...");
     execute_trajectory_gripper();
     RCLCPP_INFO(LOGGER, "Gripper Opened");
+    
+    // wait for few seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, +1.15);
+    setup_waypoints_target(+0.000, +0.000, +1.20);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
     RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
     execute_trajectory_cartesian();
+    
+    // wait for few seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // close the gripper
     RCLCPP_INFO(LOGGER, "Closing Gripper...");
@@ -278,7 +296,9 @@ public:
     plan_trajectory_kinematics();
     RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
     execute_trajectory_kinematics();
-
+    
+    // wait for few seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     RCLCPP_INFO(LOGGER, "Going to Home Position...");
     // setup the joint value target
     RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
