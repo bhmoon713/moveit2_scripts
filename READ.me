@@ -81,7 +81,7 @@ found
     )
 
 
-by mistake you have to build whole works space again
+# by mistake you have to build whole works space again
 colcon build --packages-select custom_msgs
 source install/setup.bash
 colcon build
@@ -132,5 +132,53 @@ ros2 service call /delete_entity gazebo_msgs/srv/DeleteEntity "{name: 'portable_
 ## spawn cup again
 ros2 run gazebo_ros spawn_entity.py \
   -entity portable_cup_2 \
-  -file ~/ros2_ws/install/barista_extra_models/share/barista_extra_models/models/portable_cup_2/model.sdf \
-  -x 14.16 -y -18.19 -z 1.025
+  -file ~/ros2_ws/src/universal_robot_ros2/the_construct_office_gazebo/models/portable_cup_2/model.sdf \
+  -x 14.16 -y -18.19 -z 1.025 \
+  -R 1.57 -P 0.0 -Y 0.0
+
+
+start_world_standalone.launch.py
+
+
+# tracing gazebo world
+
+start_world_standalone.launch.py
+start_world.launch.py
+starbots_complete.world
+
+    <model name="portable_cup_2">
+      <static>0</static>
+      <include>
+        <uri>model://portable_cup_2</uri>
+      </include>
+      <pose>14.16 -18.19 1.025 1.57 0 0</pose>
+    </model>
+
+
+ros2 run gazebo_ros spawn_entity.py \
+  -entity portable_cup_2 \
+  -file ~/ros2_ws/src/universal_robot_ros2/the_construct_office_gazebo/models/portable_cup_2/model.sdf \
+  -x 14.16 -y -18.19 -z 1.025 \
+  -R 1.57 -P 0.0 -Y 0.0
+
+
+# tracing baristabot robot
+
+# tracing gazebo world
+
+def gen_robot_info():
+
+    # pose_1 = [13.64, -18.51, 1.57]
+    # pose_1 = [13.58, -18.51, 1.57]
+    pose_1 = [13.50, -18.51, 1.57]
+
+    robot_name = "barista_1"
+    x_pos = pose_1[0]
+    y_pos = pose_1[1]
+    yaw_pos = pose_1[2]
+    robot = {'name': robot_name, 'x_pose': x_pos,
+                    'y_pose': y_pos, 'z_pose': 0.1, 'Y_pose': yaw_pos}
+
+    #print("############### ROBOTS MULTI ARRAY="+str(robot))
+
+    return robot
