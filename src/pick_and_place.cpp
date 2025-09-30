@@ -114,17 +114,6 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
     execute_trajectory_kinematics();
 
-    RCLCPP_INFO(LOGGER, "Going to Pregrasp Position...");
-    // setup the goal pose target
-    RCLCPP_INFO(LOGGER, "Preparing Goal Pose Trajectory...");
-    setup_goal_pose_target(+0.303, +0.331, +0.32, -1.000, +0.000, +0.000,
-                           +0.000);
-    // plan and execute the trajectory
-    RCLCPP_INFO(LOGGER, "Planning Goal Pose Trajectory...");
-    plan_trajectory_kinematics();
-    RCLCPP_INFO(LOGGER, "Executing Goal Pose Trajectory...");
-    execute_trajectory_kinematics();
-
     // open the gripper
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
     // setup the gripper target by pose name
@@ -136,6 +125,20 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Gripper Action...");
     execute_trajectory_gripper();
     RCLCPP_INFO(LOGGER, "Gripper Opened");
+
+
+    RCLCPP_INFO(LOGGER, "Going to Pregrasp Position...");
+    // setup the goal pose target
+    RCLCPP_INFO(LOGGER, "Preparing Goal Pose Trajectory...");
+    setup_goal_pose_target(+0.303, +0.331, +0.32, -1.000, +0.000, +0.000,
+                           +0.000);
+    // plan and execute the trajectory
+    RCLCPP_INFO(LOGGER, "Planning Goal Pose Trajectory...");
+    plan_trajectory_kinematics();
+    RCLCPP_INFO(LOGGER, "Executing Goal Pose Trajectory...");
+    execute_trajectory_kinematics();
+
+
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1500));
@@ -156,7 +159,8 @@ public:
     // setup the gripper joint value
     RCLCPP_INFO(LOGGER, "Preparing Gripper Value...");
     // setup_joint_value_gripper(+0.7);
-    setup_named_pose_gripper("close_0");
+    // setup_named_pose_gripper("close_0");
+    setup_joint_value_gripper(-0.65); //0.4~ -0.7
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Gripper Action...");
     plan_trajectory_gripper();
@@ -251,23 +255,23 @@ public:
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    // Going back to pick up position
-    RCLCPP_INFO(LOGGER, "Going to Place Position...");
-    // get current state of robot
-    current_state_robot_ = move_group_robot_->getCurrentState(10);
-    current_state_robot_->copyJointGroupPositions(joint_model_group_robot_,
-                                                  joint_group_positions_robot_);
-    // setup the joint value target
-    RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
-    setup_joint_value_target(
-        joint_group_positions_robot_[0] - 2.0, joint_group_positions_robot_[1],
-        joint_group_positions_robot_[2], joint_group_positions_robot_[3],
-        joint_group_positions_robot_[4], joint_group_positions_robot_[5]);
-    // plan and execute the trajectory
-    RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
-    plan_trajectory_kinematics();
-    RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
-    execute_trajectory_kinematics();
+    // // Going back to pick up position
+    // RCLCPP_INFO(LOGGER, "Going to Place Position...");
+    // // get current state of robot
+    // current_state_robot_ = move_group_robot_->getCurrentState(10);
+    // current_state_robot_->copyJointGroupPositions(joint_model_group_robot_,
+    //                                               joint_group_positions_robot_);
+    // // setup the joint value target
+    // RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
+    // setup_joint_value_target(
+    //     joint_group_positions_robot_[0] - 2.0, joint_group_positions_robot_[1],
+    //     joint_group_positions_robot_[2], joint_group_positions_robot_[3],
+    //     joint_group_positions_robot_[4], joint_group_positions_robot_[5]);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
+    // plan_trajectory_kinematics();
+    // RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
+    // execute_trajectory_kinematics();
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
