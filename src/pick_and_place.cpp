@@ -99,27 +99,28 @@ public:
     RCLCPP_INFO(LOGGER, "Class Terminated: Pick And Place Trajectory");
   }
 
-    void execute_trajectory_plan() {
-    // Define 4 final “slot” offsets (relative deltas after arriving near barista_1)
-    // Replace these with your exact four targets.
-    const std::vector<std::tuple<double,double,double>> final_slots = {
-        { 0.0,      0.0,    0.0},  // slot A
-        { 0.000, -0.098,  0.000},  // slot B
-        {-0.115, -0.130,  0.000},  // slot C
-        {-0.115,  0.000,  0.000},   // slot D (example; adjust as needed)
+  void execute_trajectory_plan() {
+    // Define 4 final “slot” offsets (relative deltas after arriving near
+    // barista_1) Replace these with your exact four targets.
+    const std::vector<std::tuple<double, double, double>> final_slots = {
+        {0.0, 0.0, 0.0},         // slot A
+        {-0.115, 0.000, 0.000}, // slot B
+        {0.000, -0.130, 0.000}, // slot C
+        {-0.115,-0.130, 0.000}, // slot D
     };
 
     for (size_t i = 0; i < final_slots.size(); ++i) {
-        RCLCPP_INFO(LOGGER, "==============================");
-        RCLCPP_INFO(LOGGER, "Starting cycle %zu / %zu", i+1, final_slots.size());
-        RCLCPP_INFO(LOGGER, "==============================");
-        run_one_cycle(final_slots[i]);
-        // Optional pause between cycles
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+      RCLCPP_INFO(LOGGER, "==============================");
+      RCLCPP_INFO(LOGGER, "Starting cycle %zu / %zu", i + 1,
+                  final_slots.size());
+      RCLCPP_INFO(LOGGER, "==============================");
+      run_one_cycle(final_slots[i]);
+      // Optional pause between cycles
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     RCLCPP_INFO(LOGGER, "All cycles complete.");
-    }
+  }
 
 private:
   // using shorthand for lengthy class references
@@ -174,14 +175,17 @@ private:
   const double end_effector_step_ = 0.01;
   double plan_fraction_robot_ = 0.0;
 
-
-    void run_one_cycle(const std::tuple<double,double,double>& final_slot) {
-    RCLCPP_INFO(LOGGER, "Planning and Executing Draw X Cartesian Trajectory...");
+  void run_one_cycle(const std::tuple<double, double, double> &final_slot) {
+    RCLCPP_INFO(LOGGER,
+                "Planning and Executing Draw X Cartesian Trajectory...");
 
     RCLCPP_INFO(LOGGER, "Going to Home Position...");
     // setup the joint value target
     RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
-    setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708, +0.0000);
+    // setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708,
+    //                          +0.0000);
+    setup_joint_value_target(+0.0000, -1.5708, +0.0000, -1.5708, +0.0000,
+                             +0.0000);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
     plan_trajectory_kinematics();
@@ -189,6 +193,7 @@ private:
     execute_trajectory_kinematics();
 
     // open the gripper
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
     RCLCPP_INFO(LOGGER, "Preparing Gripper Value...");
     setup_named_pose_gripper("open");
@@ -200,14 +205,15 @@ private:
 
     RCLCPP_INFO(LOGGER, "Going to Pregrasp Position...");
     RCLCPP_INFO(LOGGER, "Preparing Goal Pose Trajectory...");
-    setup_goal_pose_target(+0.303, +0.331, +0.32, -1.000, +0.000, +0.000, +0.000);
+    setup_goal_pose_target(+0.303, +0.331, +0.32, -1.000, +0.000, +0.000,
+                           +0.000);
     RCLCPP_INFO(LOGGER, "Planning Goal Pose Trajectory...");
     plan_trajectory_kinematics();
     RCLCPP_INFO(LOGGER, "Executing Goal Pose Trajectory...");
     execute_trajectory_kinematics();
 
     // wait
-    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
     RCLCPP_INFO(LOGGER, "Doing X Cartesian Trajectory...");
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
@@ -238,8 +244,9 @@ private:
     execute_trajectory_cartesian();
 
     // move over to barista_1 (absolute offset wrt its pose)
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    RCLCPP_INFO(LOGGER, "Using barista_1 XY: x=%.6f y=%.6f", barista_1_x_, barista_1_y_);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    RCLCPP_INFO(LOGGER, "Using barista_1 XY: x=%.6f y=%.6f", barista_1_x_,
+                barista_1_y_);
     const double dx_to_target = (barista_1_x_ - 14.143);
     const double dy_to_target = (barista_1_y_ + 18.295);
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory to target base...");
@@ -251,11 +258,12 @@ private:
     execute_trajectory_cartesian();
 
     // ——— per-iteration “final slot” offset ———
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     double slot_dx, slot_dy, slot_dz;
     std::tie(slot_dx, slot_dy, slot_dz) = final_slot;
 
-    RCLCPP_INFO(LOGGER, "Final slot offset: dx=%.6f dy=%.6f dz=%.6f", slot_dx, slot_dy, slot_dz);
+    RCLCPP_INFO(LOGGER, "Final slot offset: dx=%.6f dy=%.6f dz=%.6f", slot_dx,
+                slot_dy, slot_dz);
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory (final slot)...");
     setup_waypoints_target(slot_dx, slot_dy, slot_dz);
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
@@ -264,7 +272,7 @@ private:
     execute_trajectory_cartesian();
 
     // place down
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory (place down)...");
     setup_waypoints_target(-0.0, -0.0, -0.610);
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
@@ -273,7 +281,7 @@ private:
     execute_trajectory_cartesian();
 
     // open
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
     setup_named_pose_gripper("open");
     RCLCPP_INFO(LOGGER, "Planning Gripper Action...");
@@ -283,7 +291,7 @@ private:
     RCLCPP_INFO(LOGGER, "Gripper Opened");
 
     // lift up
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory (lift up)...");
     setup_waypoints_target(+0.000, +0.000, +0.610);
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
@@ -292,7 +300,7 @@ private:
     execute_trajectory_cartesian();
 
     // close gripper (post-place)
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Closing Gripper...");
     setup_named_pose_gripper("close_3");
     RCLCPP_INFO(LOGGER, "Planning Gripper Action...");
@@ -302,18 +310,23 @@ private:
     RCLCPP_INFO(LOGGER, "Gripper Closed");
 
     // home
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     RCLCPP_INFO(LOGGER, "Going to Home Position...");
     RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
-    setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708, +0.0000);
+    // setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708,
+    //                          +0.0000);
+    setup_joint_value_target(+0.0000, -1.5708, +0.0000, -1.5708, +0.0000,
+                             +0.0000);
     RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
     plan_trajectory_kinematics();
     RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
     execute_trajectory_kinematics();
 
+    // wait
+    RCLCPP_INFO(LOGGER, "Wait 20 seconds to reach final state.");
+    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
     RCLCPP_INFO(LOGGER, "One cycle complete.");
-    }
-
+  }
 
   void setup_joint_value_target(float angle0, float angle1, float angle2,
                                 float angle3, float angle4, float angle5) {
