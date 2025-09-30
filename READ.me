@@ -6,7 +6,8 @@ ros2 launch the_construct_office_gazebo starbots_ur3e.launch.xml
 
 # launch moveit
 cd ros2_ws/
-source install/setup.bash
+colcon build --packages-select my_moveit_config
+source ~/ros2_ws/install/setup.bash
 ros2 launch my_moveit_config move_group.launch.py
 ros2 launch real_moveit_config move_group.launch.py
 
@@ -19,7 +20,7 @@ ros2 topic echo /joint_states
 cd ros2_ws/ros2 control list_controllers
 
 # launch rviz
-cd ros2_ws
+cd ~/ros2_ws
 source install/setup.bash
 ros2 launch my_moveit_config moveit_rviz.launch.py
 ros2 launch real_moveit_config moveit_rviz.launch.py

@@ -17,6 +17,8 @@ find_package(geometric_shapes REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(moveit_msgs REQUIRED)
 find_package(custom_msgs REQUIRED)
+find_package(gazebo_msgs REQUIRED)
+
 
 
 if(BUILD_TESTING)
@@ -134,7 +136,8 @@ ament_target_dependencies(pick_and_place
     moveit_ros_planning_interface
     interactive_markers
     moveit_ros_planning
-    control_msgs)
+    control_msgs
+    gazebo_msgs)
 
 add_executable(pick_and_place_real
     src/pick_and_place_real.cpp)

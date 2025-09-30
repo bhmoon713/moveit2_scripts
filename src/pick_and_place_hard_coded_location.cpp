@@ -4,11 +4,6 @@
 #include <moveit_msgs/msg/display_robot_state.hpp>
 #include <moveit_msgs/msg/display_trajectory.hpp>
 
-#include <algorithm> // std::find
-#include <gazebo_msgs/msg/model_states.hpp>
-#include <limits>
-#include <mutex>
-
 #include <chrono>
 #include <cmath>
 #include <memory>
@@ -34,16 +29,6 @@ public:
     // initialize move_group node
     move_group_node_ =
         rclcpp::Node::make_shared("move_group_node", node_options);
-
-    // 2) Create the /gazebo/model_states subscriber on that node
-    model_states_sub_ =
-        move_group_node_->create_subscription<gazebo_msgs::msg::ModelStates>(
-            "/gazebo/model_states",
-            rclcpp::QoS(rclcpp::KeepLast(10))
-                .best_effort(), // QoS that plays nice with Gazebo
-            std::bind(&PickAndPlaceTrajectory::onModelStates, this,
-                      std::placeholders::_1));
-
     // start move_group node in a new executor thread and spin it
     executor_.add_node(move_group_node_);
     std::thread([this]() { this->executor_.spin(); }).detach();
@@ -175,17 +160,13 @@ public:
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    RCLCPP_INFO(LOGGER, "Using barista_1 XY: x=%.6f y=%.6f", barista_1_x_,
-                barista_1_y_);
-    const double dx = (barista_1_x_ - 14.143);
-    const double dy = (barista_1_y_ + 18.295);
+
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    RCLCPP_INFO(LOGGER, "dx, dy: dx=%.6f dy=%.6f", dx, dy);
-    setup_waypoints_target(dx, dy, +0.000);
-    // setup_waypoints_target((dx - 0.115), dy, +0.000);
-    // setup_waypoints_target(dx, (dy - 98), +0.000);  // Cannot solve direct
-    // setup_waypoints_target((dx - 0.115), (dy - 98), +0.000);
+    setup_waypoints_target(-0.648, -0.245, +0.000);
+    // setup_waypoints_target(-0.752, -0.245, +0.000);
+    // setup_waypoints_target(-0.648, -0.345, +0.000);  // Cannot solve direct path
+    // setup_waypoints_target(-0.752, -0.345, +0.000);
     // setup_waypoints_target(-0.700, -0.280, +0.000);  //center
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
@@ -193,12 +174,45 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
     execute_trajectory_cartesian();
 
+    // // wait for few seconds
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    // RCLCPP_INFO(LOGGER, "Going to Place Position...");
+    // // get current state of robot
+    // current_state_robot_ = move_group_robot_->getCurrentState(10);
+    // current_state_robot_->copyJointGroupPositions(joint_model_group_robot_,
+    //                                               joint_group_positions_robot_);
+    // // setup the joint value target
+    // RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
+    // setup_joint_value_target(
+    //     joint_group_positions_robot_[0] + 2.0,
+    //     joint_group_positions_robot_[1], joint_group_positions_robot_[2],
+    //     joint_group_positions_robot_[3], joint_group_positions_robot_[4],
+    //     joint_group_positions_robot_[5]);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
+    // plan_trajectory_kinematics();
+    // RCLCPP_INFO(LOGGER, "Executing Joint Value Trajectory...");
+    // execute_trajectory_kinematics();
+
+    // // wait for few seconds
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    // // setup the cartesian target
+    // RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
+    // setup_waypoints_target(-0.035, -0.035, +0.000);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
+    // plan_trajectory_cartesian();
+    // RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
+    // execute_trajectory_cartesian();
+
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, -0.64);
+    setup_waypoints_target(+0.000, +0.000, -0.61);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -225,7 +239,7 @@ public:
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(+0.000, +0.000, +0.64);
+    setup_waypoints_target(+0.000, +0.000, +0.61);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -247,6 +261,24 @@ public:
     RCLCPP_INFO(LOGGER, "Executing Gripper Action...");
     execute_trajectory_gripper();
     RCLCPP_INFO(LOGGER, "Gripper Closed");
+
+    // // setup the cartesian target
+    // RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
+    // setup_waypoints_target(-0.300, -0.100, +0.000);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
+    // plan_trajectory_cartesian();
+    // RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
+    // execute_trajectory_cartesian();
+
+    // // setup the cartesian target
+    // RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
+    // setup_waypoints_target(+0.100, +0.300, +0.000);
+    // // plan and execute the trajectory
+    // RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
+    // plan_trajectory_cartesian();
+    // RCLCPP_INFO(LOGGER, "Executing Cartesian Trajectory...");
+    // execute_trajectory_cartesian();
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -321,15 +353,6 @@ private:
   RobotStatePtr current_state_gripper_;
   Plan gripper_trajectory_plan_;
   bool plan_success_gripper_ = false;
-
-  // Subscriber
-  rclcpp::Subscription<gazebo_msgs::msg::ModelStates>::SharedPtr
-      model_states_sub_;
-
-  // Stored values
-  double barista_1_x_ = std::numeric_limits<double>::quiet_NaN();
-  double barista_1_y_ = std::numeric_limits<double>::quiet_NaN();
-  std::mutex barista_pose_mutex_;
 
   // declare cartesian trajectory planning variables for robot
   std::vector<Pose> cartesian_waypoints_;
@@ -442,21 +465,6 @@ private:
     } else {
       RCLCPP_INFO(LOGGER, "Gripper Action Command Failed !");
     }
-  }
-  void onModelStates(const gazebo_msgs::msg::ModelStates::SharedPtr msg) {
-    auto it = std::find(msg->name.begin(), msg->name.end(), "barista_1");
-    if (it == msg->name.end())
-      return;
-
-    const size_t idx = std::distance(msg->name.begin(), it);
-    const auto &p = msg->pose[idx].position;
-
-    std::lock_guard<std::mutex> lk(barista_pose_mutex_);
-    barista_1_x_ = p.x;
-    barista_1_y_ = p.y;
-    // Optional: log once or occasionally
-    // RCLCPP_DEBUG(LOGGER, "barista_1: x=%.3f y=%.3f", barista_1_x_,
-    // barista_1_y_);
   }
 
 }; // class PickAndPlaceTrajectory
