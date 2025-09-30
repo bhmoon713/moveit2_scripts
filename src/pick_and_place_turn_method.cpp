@@ -129,7 +129,7 @@ public:
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(0.000, 0.000, -0.060);
+    setup_waypoints_target(0.000, 0.000, -0.040);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -142,6 +142,7 @@ public:
     RCLCPP_INFO(LOGGER, "Preparing Gripper Value...");
     // setup_joint_value_gripper(+0.7);
     setup_named_pose_gripper("close_0");
+    setup_waypoints_target(0.2);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Gripper Action...");
     plan_trajectory_gripper();
@@ -151,7 +152,7 @@ public:
 
     // setup the cartesian target
     RCLCPP_INFO(LOGGER, "Preparing Cartesian Trajectory...");
-    setup_waypoints_target(0.000, 0.000, +0.060);
+    setup_waypoints_target(0.000, 0.000, +0.040);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Cartesian Trajectory...");
     plan_trajectory_cartesian();
@@ -204,7 +205,6 @@ public:
 
     // wait for few seconds
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 
     // open the gripper
     RCLCPP_INFO(LOGGER, "Opening Gripper...");
