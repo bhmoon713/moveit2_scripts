@@ -78,6 +78,7 @@ found
 
 
 # by mistake you have to build whole works space again
+cd ~/ros2_ws/
 colcon build --packages-select custom_msgs
 source install/setup.bash
 colcon build
@@ -127,7 +128,7 @@ ros2 service call /delete_entity gazebo_msgs/srv/DeleteEntity "{name: 'portable_
 
 ## spawn cup again
 ros2 run gazebo_ros spawn_entity.py \
-  -entity portable_cup_2 \
+  -entity portable_cup_1 \
   -file ~/ros2_ws/src/universal_robot_ros2/the_construct_office_gazebo/models/portable_cup_2/model.sdf \
   -x 14.16 -y -18.19 -z 1.025 \
   -R 1.57 -P 0.0 -Y 0.0

@@ -105,8 +105,9 @@ public:
     const std::vector<std::tuple<double, double, double>> final_slots = {
         {0.0, 0.0, 0.0},         // slot A
         {-0.115, 0.000, 0.000}, // slot B
-        {0.000, -0.130, 0.000}, // slot C
         {-0.115,-0.130, 0.000}, // slot D
+        {0.000, -0.130, 0.000}, // slot C
+
     };
 
     for (size_t i = 0; i < final_slots.size(); ++i) {
@@ -184,7 +185,7 @@ private:
     RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
     // setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708,
     //                          +0.0000);
-    setup_joint_value_target(+0.0000, -1.5708, +0.0000, -1.5708, +0.0000,
+    setup_joint_value_target(+0.0000, -1.5708, +1.5708, -1.5708, -1.5708,
                              +0.0000);
     // plan and execute the trajectory
     RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
@@ -315,7 +316,7 @@ private:
     RCLCPP_INFO(LOGGER, "Preparing Joint Value Trajectory...");
     // setup_joint_value_target(+0.0000, -2.3562, +1.5708, -1.5708, -1.5708,
     //                          +0.0000);
-    setup_joint_value_target(+0.0000, -1.5708, +0.0000, -1.5708, +0.0000,
+    setup_joint_value_target(+0.0000, -1.5708, +1.5708, -1.5708, -1.5708,
                              +0.0000);
     RCLCPP_INFO(LOGGER, "Planning Joint Value Trajectory...");
     plan_trajectory_kinematics();
