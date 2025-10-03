@@ -378,7 +378,7 @@ private:
 
       // Convert pixel error to meters (2 px ≈ 1 mm → 0.002 m per px)
       dx_to_target_ = (small_circle_x_px_ - 373.0) * 0.002;
-      dy_to_target_ = (small_circle_y_px_ - 290.0) * 0.002;
+      dy_to_target_ = -(small_circle_y_px_ - 290.0) * 0.002;
     }
 
     RCLCPP_INFO_THROTTLE(
