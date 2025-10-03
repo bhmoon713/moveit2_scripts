@@ -39,6 +39,8 @@ ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 ros2 run tf2_ros tf2_echo base_link tool0
 ros2 run tf2_ros tf2_echo base_link wrist_rgbd_camera_link
 ros2 run tf2_ros tf2_echo base_link wrist_rgbd_camera_depth_frame 
+ros2 run tf2_ros tf2_echo base_link wrist_rgbd_camera_depth_optical_frame
+ros2 run tf2_ros wrist_rgbd_camera_depth_optical_frame tf2_echo base_link 
 ros2 run tf2_ros tf2_echo wrist_rgbd_camera_link wrist_rgbd_camera_depth_frame 
 ros2 launch moveit_setup_assistant setup_assistant.launch.py
 
@@ -50,31 +52,6 @@ user:~$ ros2 action send_goal /gripper_controller/gripper_cmd control_msgs/actio
 "
 
 
-found 
-
-
-
-  <!-- Launches World now independently form spawning robot -->
-  <include file="$(find-pkg-share the_construct_office_gazebo)/launch/start_world_standalone.launch.py"/>
-  <!-- UR3e Arm -->
-  <include file="$(find-pkg-share ur_simulation_gazebo)/launch/ur_sim_starbots.launch.py"/>
-  <!-- Spawn Barista -->
-  <include file="$(find-pkg-share barista_gazebo)/launch/barista_1.launch.py"/>
-
-
-
-    # Spawn robot
-    gazebo_spawn_robot = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
-        name="spawn_ur",
-        #arguments=["-entity", "ur", "-topic", "robot_description"],
-        arguments=['-topic', 'robot_description',
-                                   '-x', "13.9", '-y', "-18.56", '-z', "1.032",
-                                   '-R', "0.0", '-P', "0.0", '-Y', "0.0",
-                                   '-entity', 'ur'],
-        output="screen",
-    )
 
 
 # by mistake you have to build whole works space again
@@ -87,19 +64,6 @@ colcon build
 
 ros2 topic echo /joint_states
 
-
-ros2 run object_detection_cpp object_detection_node --ros-args \
-  -p plane.max_x_dist:=0.8 -p plane.min_height:=-0.3 -p plane.max_height:=0.0 \
-  -p objects.max_x_dist:=0.8 -p objects.min_height:=0.0 -p objects.max_height:=1.0 \
-  -p cluster.tolerance:=0.02 -p cluster.min_size:=1000 -p cluster.max_size:=500000 \
-  -p target_frame:=base_link
-
-
-ros2 run object_detection_cpp object_detection_node --ros-args \
-  -p plane.max_x_dist:=2.0 -p plane.min_height:=-0.1 -p plane.max_height:=0.01 \
-  -p objects.max_x_dist:=2.0 -p objects.min_height:=0.0 -p objects.max_height:=1.0 \
-  -p cluster.tolerance:=0.02 -p cluster.min_size:=1000 -p cluster.max_size:=100000 \
-  -p target_frame:=base_link
 
 
 ros2 topic echo /surface_detected
@@ -179,3 +143,6 @@ def gen_robot_info():
     #print("############### ROBOTS MULTI ARRAY="+str(robot))
 
     return robot
+
+    ros2 run teleop_twist_keyboard teleop_twist_keyboard \
+  --ros-args -r cmd_vel:=/barista_1/cmd_vel

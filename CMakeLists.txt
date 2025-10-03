@@ -137,6 +137,23 @@ ament_target_dependencies(pick_and_place
     interactive_markers
     moveit_ros_planning
     control_msgs
+    custom_msgs               # <-- add this
+    gazebo_msgs)
+
+
+add_executable(pick_and_place_test 
+	src/pick_and_place_test.cpp)
+target_include_directories(pick_and_place_test
+    PUBLIC include)
+ament_target_dependencies(pick_and_place_test
+    ament_cmake
+    rclcpp
+    rclcpp_action
+    moveit_core
+    moveit_ros_planning_interface
+    interactive_markers
+    moveit_ros_planning
+    control_msgs
     gazebo_msgs)
 
 add_executable(pick_and_place_real
@@ -234,6 +251,7 @@ install(TARGETS
     kinematics_plugin_trajectory
 	pick_and_place_trajectory
 	pick_and_place
+	pick_and_place_test
 	pick_and_place_real
 	pick_and_place_perception
 	pick_and_place_perception_real
